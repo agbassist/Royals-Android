@@ -8,7 +8,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -175,8 +178,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     {
                         String ending = tester.first().attr("href");
                         Document playerPage = Jsoup.connect("https://www.baseball-reference.com" + ending).get();
-
                         Elements profilePics = playerPage.getElementsByAttributeValue("class", "media-item");
+
                         if( !profilePics.isEmpty() )
                         {
                             Element profilePic = profilePics.first();
@@ -205,24 +208,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             super.onPostExecute(aVoid);
 
-            TableLayout table = findViewById( R.id.table );
-
-            for ( int i = 0; i < bitmapArray.size(); i++ )
-            {
-                TableRow row = new TableRow(thisContext);
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                row.setLayoutParams(lp);
-
-                ImageView pic = new ImageView(thisContext);
-                pic.setImageBitmap(bitmapArray.get(i));
-                row.addView(pic);
-
-                TextView player = new TextView(thisContext);
-                player.setText(playerNames.get(i));
-                row.addView(player);
-
-                table.addView(row);
-            }
+            RecyclerView recyclerView = findViewById( R.id.recycler_view );
+            RecyclerViewAdapter adapter = new RecyclerViewAdapter( thisContext, bitmapArray, playerNames, playerEndings );
+            recyclerView.setAdapter( adapter );
+            recyclerView.setLayoutManager(new LinearLayoutManager(thisContext));
 
             text.setText( "" );
         }
