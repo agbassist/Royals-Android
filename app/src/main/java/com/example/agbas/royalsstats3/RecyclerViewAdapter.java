@@ -15,9 +15,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.PlayerTile>
 {
     private static final String TAG = "RecyclerViewAdapter";
+    public static final String EXTRA_MESSAGE = "RecyclerViewAdapter";
 
     private ArrayList<Bitmap> mBitmapArray = new ArrayList<>();
     private ArrayList<String> mPlayerNames = new ArrayList<>();
@@ -42,7 +45,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder( @NonNull PlayerTile playerTile, final int i )
+    public void onBindViewHolder( @NonNull final PlayerTile playerTile, final int i )
     {
         playerTile.textView.setText( mPlayerNames.get(i) );
         playerTile.imageView.setImageBitmap( mBitmapArray.get(i) );
@@ -51,7 +54,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View view)
             {
-                Toast.makeText(mContext, mPlayerNames.get( i ), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent( mContext, PlayerPage.class );
+                intent.putExtra( EXTRA_MESSAGE, mPlayerNames.get(i) );
+                mContext.startActivity( intent );
             }
         });
     }

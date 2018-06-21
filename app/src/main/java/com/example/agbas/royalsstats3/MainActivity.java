@@ -41,26 +41,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 {
     Context thisContext = this;
 
-    ArrayList<Bitmap> bitmapArray;
-    ArrayList<String> playerNames;
-    ArrayList<String> playerEndings;
+    ArrayList<Bitmap> bitmapArray = new ArrayList<>();
+    ArrayList<String> playerNames = new ArrayList<>();
+    ArrayList<String> playerEndings = new ArrayList<>();
+
+    TextView text;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        text = findViewById( R.id.text1 );
 
         new getData().execute();
     }
@@ -142,21 +137,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    public void startReyclerView()
+    {
+        recyclerView = findViewById( R.id.recycler_view );
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter( thisContext, bitmapArray, playerNames, playerEndings );
+        recyclerView.setAdapter( adapter );
+        recyclerView.setLayoutManager(new LinearLayoutManager(thisContext));
+    }
+
     private class getData extends AsyncTask<Void, Void, Void>
     {
-        TextView text;
 
         @Override
         protected void onPreExecute()
         {
             super.onPreExecute();
-
-            bitmapArray = new ArrayList<Bitmap>();
-            playerNames = new ArrayList<String>();
-            playerEndings = new ArrayList<String>();
-
-            text = findViewById( R.id.text1 );
-            text.setText( "Loading..." );
+            text.setText("Loading...");
         }
 
         @Override
@@ -208,10 +204,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             super.onPostExecute(aVoid);
 
-            RecyclerView recyclerView = findViewById( R.id.recycler_view );
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter( thisContext, bitmapArray, playerNames, playerEndings );
-            recyclerView.setAdapter( adapter );
-            recyclerView.setLayoutManager(new LinearLayoutManager(thisContext));
+            startReyclerView();
 
             text.setText( "" );
         }
