@@ -41,12 +41,14 @@ public class MainActivity extends AppCompatActivity
 {
     Context thisContext = this;
 
-    ArrayList<Bitmap> bitmapArray = new ArrayList<>();
-    ArrayList<String> playerNames = new ArrayList<>();
-    ArrayList<String> playerEndings = new ArrayList<>();
+    private ArrayList<Bitmap> bitmapArray = new ArrayList<>();
+    private ArrayList<String> playerNames = new ArrayList<>();
+    private ArrayList<String> playerEndings = new ArrayList<>();
 
-    TextView text;
-    RecyclerView recyclerView;
+    private static final String urlStart = "https://www.baseball-reference.com";
+
+    private TextView text;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -76,37 +78,29 @@ public class MainActivity extends AppCompatActivity
             {
                 //Connect to the website
                 Document document = Jsoup.connect("https://www.baseball-reference.com/teams/KCR/2018.shtml").get();
+                Elements elements = document.select( "table#team_batting [data-stat=player]" );
 
-                Element battingTable = document.getElementById( "all_team_batting" );
-                Elements players = battingTable.getElementsByAttributeValue( "data-stat", "player" );
-
-                for( Element player : players )
+                for( Element playerInfo : elements )
                 {
-                    Elements tester = player.getElementsByAttribute( "href" );
+                    String tempName = playerInfo.attr( "csk" );
 
-                    if( !tester.isEmpty() )
+                    if( !tempName.isEmpty() )
                     {
-                        String ending = tester.first().attr("href");
-                        Document playerPage = Jsoup.connect("https://www.baseball-reference.com" + ending).get();
-                        Elements profilePics = playerPage.getElementsByAttributeValue("class", "media-item");
+                        String[] playerName = tempName.split( "," );
+                        String formattedName = playerName[1] + " " + playerName[0];
+                        playerNames.add( formattedName );
 
-                        if( !profilePics.isEmpty() )
-                        {
-                            Element profilePic = profilePics.first();
-                            profilePic = profilePic.child(0);
-                            InputStream input = new java.net.URL(profilePic.attr("src")).openStream();
+                        String tempEnding = playerInfo.select("a[href]").attr("href" );
+                        playerEndings.add( tempEnding );
 
-                            String[] playerName = player.attr( "csk" ).split( "," );
-                            String formattedName = playerName[1] + " " + playerName[0];
-
-                            bitmapArray.add(BitmapFactory.decodeStream(input));
-                            playerNames.add( formattedName );
-                            playerEndings.add( ending );
-                        }
+                        Document playerPage = Jsoup.connect( urlStart + tempEnding ).get();
+                        String imageUrl = playerPage.select( "div.media-item img" ).attr( "src" );
+                        InputStream input = new java.net.URL( imageUrl ).openStream();
+                        bitmapArray.add( BitmapFactory.decodeStream( input ) );
                     }
                 }
-
-            } catch (IOException e)
+            }
+            catch( IOException e )
             {
                 e.printStackTrace();
             }
