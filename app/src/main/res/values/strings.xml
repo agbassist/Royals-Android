@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Royals Stats</string>
     <string name="action_settings">Settings</string>
+    <string name="name_message">player name</string>
+    <string name="url_message">player url</string>
+    <string name="url_start">https://www.baseball-reference.com</string>
 </resources>

@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<String> playerNames = new ArrayList<>();
     private ArrayList<String> playerEndings = new ArrayList<>();
 
-    private static final String urlStart = "https://www.baseball-reference.com";
+    private static final String teamPage = "/teams/KCR/2018.shtml";
 
     private TextView text;
     private RecyclerView recyclerView;
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
             try
             {
                 //Connect to the website
-                Document document = Jsoup.connect("https://www.baseball-reference.com/teams/KCR/2018.shtml").get();
+                Document document = Jsoup.connect( getString( R.string.url_start ) + teamPage ).get();
                 Elements elements = document.select( "table#team_batting [data-stat=player]" );
 
                 for( Element playerInfo : elements )
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity
                         String tempEnding = playerInfo.select("a[href]").attr("href" );
                         playerEndings.add( tempEnding );
 
-                        Document playerPage = Jsoup.connect( urlStart + tempEnding ).get();
+                        Document playerPage = Jsoup.connect( getString( R.string.url_start ) + tempEnding ).get();
                         String imageUrl = playerPage.select( "div.media-item img" ).attr( "src" );
                         InputStream input = new java.net.URL( imageUrl ).openStream();
                         bitmapArray.add( BitmapFactory.decodeStream( input ) );

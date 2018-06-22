@@ -20,7 +20,6 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.PlayerTile>
 {
     private static final String TAG = "RecyclerViewAdapter";
-    public static final String EXTRA_MESSAGE = "RecyclerViewAdapter";
 
     private ArrayList<Bitmap> mBitmapArray = new ArrayList<>();
     private ArrayList<String> mPlayerNames = new ArrayList<>();
@@ -55,7 +54,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View view)
             {
                 Intent intent = new Intent( mContext, PlayerPage.class );
-                intent.putExtra( EXTRA_MESSAGE, mPlayerNames.get(i) );
+                intent.putExtra( mContext.getString( R.string.name_message ), mPlayerNames.get(i) );
+                intent.putExtra( mContext.getString( R.string.url_message ), mPlayerEndings.get(i) );
                 mContext.startActivity( intent );
             }
         });
